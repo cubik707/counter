@@ -1,0 +1,23 @@
+.button {
+    cursor: pointer;
+    color: #282c34;
+    background-color: #61dafb;
+    border-radius: 10px;
+    width: 100px;
+    height: 50px;
+    font-family: 'Droid Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    border: none;
+    transition: background-color 0.2s, color 0.2s; /* добавляем transition для hover и active */
+}
+
+.button:active {
+    color: #5ab0c9;
+    background-color: #282c34;
+}
+
+.button.disable {
+    opacity: 0.5;
+    pointer-events: none; /* отключаем события мыши для disabled кнопки */
+}

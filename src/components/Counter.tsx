@@ -3,24 +3,25 @@ import {Button} from "./Button";
 import c from "./Counter.module.css"
 
 type CounterType = {
-
+    count: number
+    max: number
+    min: number
+    step: number
+    changeCount: (count: number) => void
 };
-export const Counter = (props: CounterType) => {
-    const [count, setCount] = useState(0);
-    const max = 5;
-    const min = 0;
-    const step = 1;
+export const Counter = ({count, max, min, step, changeCount}: CounterType) => {
+
 
     const isCountMax = count === max;
     const isCountMin = count === min;
     const countIncHandler = () => {
         if (count < max){
-            setCount(count + step);
+            changeCount(count + step);
         }
 
     }
     const countResetHandler = () => {
-        setCount(min);
+        changeCount(min);
     }
     console.log(count)
     return (
