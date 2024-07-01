@@ -7,38 +7,63 @@ type SettingsPropsType = {
     changeMax: (max: number) => void
     min: number
     changeMin: (min: number) => void
+    setCount: (count: number) => void
 
-    error: boolean
     setErrorHandler: (error: boolean) => void
+    setAreSettingSet: (areSettingSet: boolean) => void
 };
-export const Settings = ({  error,
-                             setErrorHandler,
-                             min,
-                             changeMin,
-                             max,
-                             changeMax
-                         }: SettingsPropsType) => {
-    const [newMin, setNewMin] = useState(min);
-    const [newMax, setNewMax] = useState(max);
+export const Settings = (props : SettingsPropsType) => {
+    const [newMin, setNewMin] = useState(props.min);
+    const [newMax, setNewMax] = useState(props.max);
+
+    const [isDisable, setIsDisable] = useState(true)
+
+    const [inputErrors, setInputErrors] = useState({min: false, max: false});
 
     const onChangeHandlerMax = (event: ChangeEvent<HTMLInputElement>) =>{
-
-        newMax < 0 || newMax < min
-            ? setErrorHandler(true)
-            : setNewMax(Number(event.currentTarget.value));
+        const value = Number(event.currentTarget.value);
+        setNewMax(value);
+        setIsDisable(false)
+        props.setAreSettingSet(false)
+        if (value < 0 || value <= newMin) {
+            props.setErrorHandler(true);
+            setInputErrors((prev) => ({...prev, max: true}))
+            setIsDisable(true)
+        } else {
+            props.setErrorHandler(false);
+            setInputErrors((prev) => ({...prev, max: false}))
+        }
 
     }
 
     const onChangeHandlerMin = (event: ChangeEvent<HTMLInputElement>) =>{
-        setNewMin(Number(event.currentTarget.value));
+        const value = Number(event.currentTarget.value);
+        setNewMin(value);
+        setIsDisable(false)
+        props.setAreSettingSet(false)
+        if (value < 0 || value >= newMax) {
+            props.setErrorHandler(true);
+            setInputErrors((prev) => ({...prev, min: true}))
+            setIsDisable(true)
+        } else {
+            props.setErrorHandler(false);
+            setInputErrors((prev) => ({...prev, min: false}))
+        }
     }
 
+
+
     const handleSetButtonClick = () => {
-        changeMin(newMin);
-        changeMax(newMax);
+        props.changeMin(newMin);
+        props.changeMax(newMax);
+        props.setCount(newMin)
+        setIsDisable(true)
+        props.setAreSettingSet(true)
+
+        localStorage.setItem("max value", JSON.stringify(newMax))
+        localStorage.setItem("start value", JSON.stringify(newMin))
     };
 
-    const inputClass = error ? s.errorInput : s.input
 
     return (
         <div className={s.box}>
@@ -49,8 +74,8 @@ export const Settings = ({  error,
                     </label>
                     <input id={'maxValue'}
                            type={'number'}
-                           className={inputClass}
-                           defaultValue={max}
+                           className={`${s.input}  ${inputErrors.max ? s.errorInput : ''}`}
+                           defaultValue={props.max}
                            onChange={onChangeHandlerMax}
                     />
                 </div>
@@ -61,14 +86,14 @@ export const Settings = ({  error,
                     </label>
                     <input id={'startValue'}
                            type={'number'}
-                           className={inputClass}
-                           defaultValue={min}
+                           className={`${s.input}  ${inputErrors.min ? s.errorInput : ''}`}
+                           defaultValue={props.min}
                            onChange={onChangeHandlerMin}
                     />
                 </div>
             </div>
             <div className={s.buttonBox}>
-                <Button title={'set'} onClick={handleSetButtonClick} disable={false}/>
+                <Button title={'set'} onClick={handleSetButtonClick} disable={isDisable}/>
             </div>
         </div>
     );

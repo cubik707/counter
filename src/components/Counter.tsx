@@ -1,6 +1,6 @@
-import {useState} from "react";
 import {Button} from "./Button";
 import c from "./Counter.module.css"
+import {Simulate} from "react-dom/test-utils";
 
 type CounterType = {
     count: number
@@ -8,29 +8,35 @@ type CounterType = {
     min: number
     step: number
     changeCount: (count: number) => void
+
+    error: boolean
+    areSettingSet: boolean
 };
-export const Counter = ({count, max, min, step, changeCount}: CounterType) => {
-
-
-    const isCountMax = count === max;
-    const isCountMin = count === min;
+export const Counter = (props: CounterType) => {
+    const isCountMax = props.count === props.max;
+    const isCountMin = props.count === props.min;
     const countIncHandler = () => {
-        if (count < max){
-            changeCount(count + step);
+        if (props.count < props.max) {
+            props.changeCount(props.count + props.step);
         }
 
     }
     const countResetHandler = () => {
-        changeCount(min);
+        props.changeCount(props.min);
     }
-    console.log(count)
+
+
+    const printValue = props.error
+        ? 'Incorrect value!' : !props.areSettingSet
+            ? 'enter values and press "set"' : `${props.count}`
+    const counterValueClassName = `${c.counter} ${isCountMax || props.error ? c.error : ''}`
     return (
         <div className={c.box}>
-            <div className={`${c.counter} ${isCountMax ? c.error : ''}`}>{count}</div>
+            <div className={counterValueClassName}>{printValue}</div>
 
             <div className={c.btnWrapper}>
-                <Button className={`${c.button} ${isCountMax ? c.disable : ''}`} title={'inc'} onClick={countIncHandler} disable={isCountMax}/>
-                <Button className={`${c.button} ${isCountMin ? c.disable : ''}`} title={'reset'} onClick={countResetHandler} disable={isCountMin}/>
+                <Button className={`${c.button} ${isCountMax ? c.disable : ''}`} title={'inc'} onClick={countIncHandler} disable={isCountMax || props.error || !props.areSettingSet}/>
+                <Button className={`${c.button} ${isCountMin ? c.disable : ''}`} title={'reset'} onClick={countResetHandler} disable={isCountMin || props.error || !props.areSettingSet}/>
             </div>
 
         </div>

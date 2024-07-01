@@ -40,8 +40,17 @@
     width: 100px;
     text-align: center;
     height: 15px;
-    font-family: 'Droid Sans', sans-serif;
-    font-weight: 400;
+    border: 2px solid #ffffff;
+}
+
+.errorInput{
+    background-color: #fa9a8d;
+    border: 2px solid #fa9a8d;
+}
+
+.errorInput:focus{
+    border: 2px solid #f54e3e;
+    outline: none;
 }
 
 .input:focus{
