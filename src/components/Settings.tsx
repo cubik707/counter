@@ -13,49 +13,59 @@ type SettingsPropsType = {
     setAreSettingSet: (areSettingSet: boolean) => void
 };
 export const Settings = (props : SettingsPropsType) => {
-
+    //Стейт для дисейбла кнопки сета
     const [isDisable, setIsDisable] = useState(true)
-
+    //Стейт для установки ошибки на конкретном инпуте
     const [inputErrors, setInputErrors] = useState({min: false, max: false});
 
+    //Обработка события ввода максимального значения на инпуте
     const onChangeHandlerMax = (event: ChangeEvent<HTMLInputElement>) =>{
         const value = Number(event.currentTarget.value);
         props.changeMax(value);
-        setIsDisable(false)
-        props.setAreSettingSet(false)
+
+        setIsDisable(false) //Теперь можно засетать
+        props.setAreSettingSet(false) //Значения не засетаны
+
         if (value < 0 || value <= props.min) {
+            //Обработка ошибок
             props.setErrorHandler(true);
             setInputErrors((prev) => ({...prev, max: true}))
-            setIsDisable(true)
+            setIsDisable(true) //При ошибке нелья засетать
         } else {
+            //Если нет ошибок
             props.setErrorHandler(false);
             setInputErrors((prev) => ({...prev, max: false}))
         }
 
     }
 
+    //Обработка события ввода стартового значения на инпуте
     const onChangeHandlerMin = (event: ChangeEvent<HTMLInputElement>) =>{
         const value = Number(event.currentTarget.value);
         props.changeMin(value);
+
         setIsDisable(false)
         props.setAreSettingSet(false)
+
         if (value < 0 || value >= props.max) {
+            //Обработка ошибок
             props.setErrorHandler(true);
             setInputErrors((prev) => ({...prev, min: true}))
-            setIsDisable(true)
+            setIsDisable(true) //При ошибке нелья засетать
         } else {
+            //Если нет ошибок
             props.setErrorHandler(false);
             setInputErrors((prev) => ({...prev, min: false}))
         }
     }
 
-
-
+    //Обработка клика по кнопке set
     const handleSetButtonClick = () => {
-        props.setCount(props.min)
-        setIsDisable(true)
-        props.setAreSettingSet(true)
+        props.setCount(props.min) //Устанавливаем положения счетчика на минимальное значение
+        setIsDisable(true) //После сета значений сетать нечего
+        props.setAreSettingSet(true) //Состояние о засетанных значениях
 
+        //Сохранение засетанных значений в local storage
         localStorage.setItem("max value", JSON.stringify(props.max))
         localStorage.setItem("start value", JSON.stringify(props.min))
     };
