@@ -13,8 +13,6 @@ type SettingsPropsType = {
     setAreSettingSet: (areSettingSet: boolean) => void
 };
 export const Settings = (props : SettingsPropsType) => {
-    const [newMin, setNewMin] = useState(props.min);
-    const [newMax, setNewMax] = useState(props.max);
 
     const [isDisable, setIsDisable] = useState(true)
 
@@ -22,10 +20,10 @@ export const Settings = (props : SettingsPropsType) => {
 
     const onChangeHandlerMax = (event: ChangeEvent<HTMLInputElement>) =>{
         const value = Number(event.currentTarget.value);
-        setNewMax(value);
+        props.changeMax(value);
         setIsDisable(false)
         props.setAreSettingSet(false)
-        if (value < 0 || value <= newMin) {
+        if (value < 0 || value <= props.min) {
             props.setErrorHandler(true);
             setInputErrors((prev) => ({...prev, max: true}))
             setIsDisable(true)
@@ -38,10 +36,10 @@ export const Settings = (props : SettingsPropsType) => {
 
     const onChangeHandlerMin = (event: ChangeEvent<HTMLInputElement>) =>{
         const value = Number(event.currentTarget.value);
-        setNewMin(value);
+        props.changeMin(value);
         setIsDisable(false)
         props.setAreSettingSet(false)
-        if (value < 0 || value >= newMax) {
+        if (value < 0 || value >= props.max) {
             props.setErrorHandler(true);
             setInputErrors((prev) => ({...prev, min: true}))
             setIsDisable(true)
@@ -54,14 +52,12 @@ export const Settings = (props : SettingsPropsType) => {
 
 
     const handleSetButtonClick = () => {
-        props.changeMin(newMin);
-        props.changeMax(newMax);
-        props.setCount(newMin)
+        props.setCount(props.min)
         setIsDisable(true)
         props.setAreSettingSet(true)
 
-        localStorage.setItem("max value", JSON.stringify(newMax))
-        localStorage.setItem("start value", JSON.stringify(newMin))
+        localStorage.setItem("max value", JSON.stringify(props.max))
+        localStorage.setItem("start value", JSON.stringify(props.min))
     };
 
 

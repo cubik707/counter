@@ -1,6 +1,5 @@
 import {Button} from "./Button";
 import c from "./Counter.module.css"
-import {Simulate} from "react-dom/test-utils";
 
 type CounterType = {
     count: number
