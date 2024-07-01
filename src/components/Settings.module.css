@@ -48,7 +48,7 @@
     border: 2px solid #fa9a8d;
 }
 
-.errorInput:focus{
+.input.errorInput:focus{
     border: 2px solid #f54e3e;
     outline: none;
 }

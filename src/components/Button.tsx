@@ -1,5 +1,4 @@
 import s from './Button.module.css'
-import c from "./Counter.module.css";
 
 type ButtonType = {
     title: string
