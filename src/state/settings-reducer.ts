@@ -1,3 +1,5 @@
+import {SettingsType} from "../components/Settings";
+
 export type SetMaxActionType = {
     type: 'SET-MAX',
     max: number,
@@ -16,13 +18,13 @@ export type SetErrorActionType = {
 
 export type ActionsType = SetMaxActionType | SetMinActionType | SetErrorActionType;
 
-const initialState = {
+const initialState : SettingsType = {
     max: 5,
     min: 0,
     error: '',
 };
 
-export const settingsReducer = (state = initialState, action: ActionsType)  => {
+export const settingsReducer = (state = initialState, action: ActionsType): SettingsType  => {
     switch (action.type) {
         case 'SET-MAX':
             return {...state, max: action.max}

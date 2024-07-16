@@ -1,16 +1,13 @@
 import {Button} from "./Button";
 import c from "./Counter.module.css"
 
-type CounterType = {
-    count: number
-    max: number
-    min: number
-    step: number
-    changeCount: (count: number) => void
-
-    error: string
+type CounterPropsType = {
 };
-export const Counter = (props: CounterType) => {
+
+export type CountType = {
+    count: number
+}
+export const Counter = (props: CounterPropsType) => {
     //Переменные состояния о том, достигнута ли верхняя или нижняя граница
     const isCountMax = props.count === props.max;
     const isCountMin = props.count === props.min;

@@ -7,7 +7,7 @@ const rootReducer = combineReducers({
     settings: settingsReducer
 })
 
-type AppRootReducer = ReturnType<typeof rootReducer>
+export type AppRootStateType = ReturnType<typeof rootReducer>
 
 export const store = legacy_createStore(rootReducer)
 

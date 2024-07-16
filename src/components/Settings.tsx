@@ -1,45 +1,56 @@
 import s from "./Settings.module.css"
 import {Button} from "./Button";
 import {ChangeEvent, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "../state/store";
+import {SetErrorAC, SetMaxAC, SetMinAC} from "../state/settings-reducer";
+import {CountType} from "./Counter";
+import {ResetCountAC} from "../state/count-reducer";
 
 type SettingsPropsType = {
-    max: number
-    changeMax: (max: number) => void
-    min: number
-    changeMin: (min: number) => void
-    setCount: (count: number) => void
-
-    setErrorHandler: (error: string) => void
 };
+
+export type SettingsType = {
+    max: number,
+    min: number,
+    error: string
+}
 export const Settings = (props : SettingsPropsType) => {
+    const settings = useSelector<AppRootStateType, SettingsType>(state => state.settings)
+    const count = useSelector<AppRootStateType, CountType>(state => state.count)
+    const dispatch = useDispatch();
+
     //Стейт для дисейбла кнопки сета
     const [isDisable, setIsDisable] = useState(true)
     //Стейт для установки ошибки на конкретном инпуте
     const [inputErrors, setInputErrors] = useState({min: false, max: false});
 
-    // Function to set the message to 'enter values and press "set"' if needed
-    const setDefaultMessage = () => {
+    const setPressSetMessage = () => {
         if (!inputErrors.min && !inputErrors.max) {
-            props.setErrorHandler('enter values and press "set"');
+            //------------ props.setErrorHandler('enter values and press "set"');
+            dispatch(SetErrorAC('enter values and press "set"'))
         }
     };
 
     //Обработка события ввода максимального значения на инпуте
     const onChangeHandlerMax = (event: ChangeEvent<HTMLInputElement>) =>{
         const value = Number(event.currentTarget.value);
-        props.changeMax(value);
+        //--------- props.changeMax(value);
+        dispatch(SetMaxAC(value))
 
         setIsDisable(false) //Теперь можно засетать
-        setDefaultMessage(); //Значения не засетаны
+        setPressSetMessage(); //Значения не засетаны
 
-        if (value < 0 || value <= props.min) {
+        if (value < 0 || value <= settings.min) {
             //Обработка ошибок
-            props.setErrorHandler('Incorrect value!');
+            //---------- props.setErrorHandler('Incorrect value!');
+            dispatch(SetErrorAC('Incorrect value!'))
+
             setInputErrors((prev) => ({...prev, max: true}))
             setIsDisable(true) //При ошибке нелья засетать
         } else {
             //Если нет ошибок
-            setDefaultMessage();
+            setPressSetMessage();
             setInputErrors((prev) => ({...prev, max: false}))
         }
 
@@ -48,32 +59,37 @@ export const Settings = (props : SettingsPropsType) => {
     //Обработка события ввода стартового значения на инпуте
     const onChangeHandlerMin = (event: ChangeEvent<HTMLInputElement>) =>{
         const value = Number(event.currentTarget.value);
-        props.changeMin(value);
+        //------- props.changeMin(value);
+        dispatch(SetMinAC(value))
 
         setIsDisable(false)
-        setDefaultMessage(); //Значения не засетаны
+        setPressSetMessage(); //Значения не засетаны
 
-        if (value < 0 || value >= props.max) {
+        if (value < 0 || value >= settings.max) {
             //Обработка ошибок
-            props.setErrorHandler('Incorrect value!');
+            //--------- props.setErrorHandler('Incorrect value!');
+            dispatch(SetErrorAC('Incorrect value!'))
+
             setInputErrors((prev) => ({...prev, min: true}))
             setIsDisable(true) //При ошибке нелья засетать
         } else {
             //Если нет ошибок
-            setDefaultMessage();
+            setPressSetMessage();
             setInputErrors((prev) => ({...prev, min: false}))
         }
     }
 
     //Обработка клика по кнопке set
     const handleSetButtonClick = () => {
-        props.setCount(props.min) //Устанавливаем положения счетчика на минимальное значение
+        //--------- props.setCount(props.min) //Устанавливаем положения счетчика на минимальное значение
+        dispatch(ResetCountAC(settings.min))
         setIsDisable(true) //После сета значений сетать нечего
-        props.setErrorHandler('');
+        //------- props.setErrorHandler('');
+        dispatch(SetErrorAC(''))
 
-        //Сохранение засетанных значений в local storage
-        localStorage.setItem("max value", JSON.stringify(props.max))
-        localStorage.setItem("start value", JSON.stringify(props.min))
+        // //Сохранение засетанных значений в local storage
+        // localStorage.setItem("max value", JSON.stringify(props.max))
+        // localStorage.setItem("start value", JSON.stringify(props.min))
     };
 
     return (
@@ -86,7 +102,7 @@ export const Settings = (props : SettingsPropsType) => {
                     <input id={'maxValue'}
                            type={'number'}
                            className={`${s.input}  ${inputErrors.max ? s.errorInput : ''}`}
-                           defaultValue={props.max}
+                           defaultValue={settings.max}
                            onChange={onChangeHandlerMax}
                     />
                 </div>
@@ -98,7 +114,7 @@ export const Settings = (props : SettingsPropsType) => {
                     <input id={'startValue'}
                            type={'number'}
                            className={`${s.input}  ${inputErrors.min ? s.errorInput : ''}`}
-                           defaultValue={props.min}
+                           defaultValue={settings.min}
                            onChange={onChangeHandlerMin}
                     />
                 </div>
