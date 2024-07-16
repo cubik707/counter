@@ -21,7 +21,6 @@ export const Counter = (props: CounterType) => {
         if (props.count < props.max) {
             props.changeCount(props.count + props.step);
         }
-
     }
 
     //Обработка нажатия на кнопке сброса
