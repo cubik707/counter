@@ -8,8 +8,7 @@ type CounterType = {
     step: number
     changeCount: (count: number) => void
 
-    error: boolean
-    areSettingSet: boolean
+    error: string
 };
 export const Counter = (props: CounterType) => {
     //Переменные состояния о том, достигнута ли верхняя или нижняя граница
@@ -27,11 +26,9 @@ export const Counter = (props: CounterType) => {
     const countResetHandler = () => {
         props.changeCount(props.min);
     }
-
+    debugger
     //Определение сообщения для вывода
-    const printValue = props.error
-        ? 'Incorrect value!' : !props.areSettingSet
-            ? 'enter values and press "set"' : `${props.count}`
+    const printValue = props.error ? props.error : `${props.count}`;
     //Опеределение класса сообщения для вывода
     const counterValueClassName = `${c.counter} ${isCountMax || props.error ? c.error : ''}`
     return (
@@ -39,8 +36,8 @@ export const Counter = (props: CounterType) => {
             <div className={counterValueClassName}>{printValue}</div>
 
             <div className={c.btnWrapper}>
-                <Button className={`${c.button} ${isCountMax ? c.disable : ''}`} title={'inc'} onClick={countIncHandler} disable={isCountMax || props.error || !props.areSettingSet}/>
-                <Button className={`${c.button} ${isCountMin ? c.disable : ''}`} title={'reset'} onClick={countResetHandler} disable={isCountMin || props.error || !props.areSettingSet}/>
+                <Button className={`${c.button} ${isCountMax ? c.disable : ''}`} title={'inc'} onClick={countIncHandler} disable={isCountMax || !!props.error}/>
+                <Button className={`${c.button} ${isCountMin ? c.disable : ''}`} title={'reset'} onClick={countResetHandler} disable={isCountMin || !!props.error}/>
             </div>
 
         </div>

@@ -19,9 +19,7 @@ function App() {
     const step = 1;
 
     //Уставнока ошибки для отображения сообщения об ошибке
-    const [error, setError] = useState(false);
-    //Уставнока состояния, засетаны для значения в настройках
-    const [areSettingSet, setAreSettingSet] = useState(true)
+    const [error, setError] = useState('');
 
     return (
         <div className="App">
@@ -32,7 +30,6 @@ function App() {
                       setCount={setCount}
 
                       setErrorHandler={setError}
-                      setAreSettingSet={setAreSettingSet}
             />
             <Counter count={count}
                      min={min}
@@ -41,7 +38,6 @@ function App() {
                      changeCount={setCount}
 
                      error={error}
-                     areSettingSet={areSettingSet}
             />
         </div>
     );

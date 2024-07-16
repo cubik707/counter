@@ -9,8 +9,7 @@ type SettingsPropsType = {
     changeMin: (min: number) => void
     setCount: (count: number) => void
 
-    setErrorHandler: (error: boolean) => void
-    setAreSettingSet: (areSettingSet: boolean) => void
+    setErrorHandler: (error: string) => void
 };
 export const Settings = (props : SettingsPropsType) => {
     //Стейт для дисейбла кнопки сета
@@ -18,22 +17,29 @@ export const Settings = (props : SettingsPropsType) => {
     //Стейт для установки ошибки на конкретном инпуте
     const [inputErrors, setInputErrors] = useState({min: false, max: false});
 
+    // Function to set the message to 'enter values and press "set"' if needed
+    const setDefaultMessage = () => {
+        if (!inputErrors.min && !inputErrors.max) {
+            props.setErrorHandler('enter values and press "set"');
+        }
+    };
+
     //Обработка события ввода максимального значения на инпуте
     const onChangeHandlerMax = (event: ChangeEvent<HTMLInputElement>) =>{
         const value = Number(event.currentTarget.value);
         props.changeMax(value);
 
         setIsDisable(false) //Теперь можно засетать
-        props.setAreSettingSet(false) //Значения не засетаны
+        setDefaultMessage(); //Значения не засетаны
 
         if (value < 0 || value <= props.min) {
             //Обработка ошибок
-            props.setErrorHandler(true);
+            props.setErrorHandler('Incorrect value!');
             setInputErrors((prev) => ({...prev, max: true}))
             setIsDisable(true) //При ошибке нелья засетать
         } else {
             //Если нет ошибок
-            props.setErrorHandler(false);
+            setDefaultMessage();
             setInputErrors((prev) => ({...prev, max: false}))
         }
 
@@ -45,16 +51,16 @@ export const Settings = (props : SettingsPropsType) => {
         props.changeMin(value);
 
         setIsDisable(false)
-        props.setAreSettingSet(false)
+        setDefaultMessage(); //Значения не засетаны
 
         if (value < 0 || value >= props.max) {
             //Обработка ошибок
-            props.setErrorHandler(true);
+            props.setErrorHandler('Incorrect value!');
             setInputErrors((prev) => ({...prev, min: true}))
             setIsDisable(true) //При ошибке нелья засетать
         } else {
             //Если нет ошибок
-            props.setErrorHandler(false);
+            setDefaultMessage();
             setInputErrors((prev) => ({...prev, min: false}))
         }
     }
@@ -63,13 +69,12 @@ export const Settings = (props : SettingsPropsType) => {
     const handleSetButtonClick = () => {
         props.setCount(props.min) //Устанавливаем положения счетчика на минимальное значение
         setIsDisable(true) //После сета значений сетать нечего
-        props.setAreSettingSet(true) //Состояние о засетанных значениях
+        props.setErrorHandler('');
 
         //Сохранение засетанных значений в local storage
         localStorage.setItem("max value", JSON.stringify(props.max))
         localStorage.setItem("start value", JSON.stringify(props.min))
     };
-
 
     return (
         <div className={s.box}>
