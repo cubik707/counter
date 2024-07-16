@@ -1,22 +1,34 @@
-export type RemoveTodolistActionType = {
-    type: 'REMOVE-TODOLIST',
-    id: string,
+export type IncrementActionType = {
+    type: 'INCREMENT',
+    step: number,
 }
-export type ActionsType = RemoveTodolistActionType;
+
+export type ResetActionType = {
+    type: 'RESET',
+    minValue: number
+}
+
+export type ActionsType = IncrementActionType | ResetActionType;
 
 const initialState = {
-    count: 0,
+    count: 0
 };
 
 export const countReducer = (state = initialState, action: ActionsType)  => {
     switch (action.type) {
-        case 'REMOVE-TODOLIST':
-            return state
+        case 'INCREMENT':
+            return {...state, count: state.count + action.step}
+        case "RESET":
+            return {...state, count: action.minValue}
         default:
             return state
     }
 }
 
-export const RemoveTodolistAC = (todolistId: string): RemoveTodolistActionType => {
-    return { type: 'REMOVE-TODOLIST', id: todolistId} as const
+export const IncrementAC = (step: number): IncrementActionType => {
+    return { type: 'INCREMENT', step} as const
+}
+
+export const ResetAC = (minValue: number): ResetActionType => {
+    return { type: 'RESET', minValue} as const
 }

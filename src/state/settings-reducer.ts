@@ -10,17 +10,16 @@ export type SetMinActionType = {
 
 export type SetErrorActionType = {
     type: 'SET-ERROR',
-    error: number,
+    error: string,
 }
 
 
-export type ActionsType = SetMaxActionType | SetMinActionType;
+export type ActionsType = SetMaxActionType | SetMinActionType | SetErrorActionType;
 
 const initialState = {
     max: 5,
     min: 0,
-    error: false,
-    areSettingSet: true
+    error: '',
 };
 
 export const settingsReducer = (state = initialState, action: ActionsType)  => {
@@ -29,6 +28,8 @@ export const settingsReducer = (state = initialState, action: ActionsType)  => {
             return {...state, max: action.max}
         case "SET-MIN":
             return {...state, min: action.min}
+        case "SET-ERROR":
+            return {...state, error: action.error}
         default:
             return state
     }
@@ -40,4 +41,8 @@ export const SetMaxAC = (max: number): SetMaxActionType => {
 
 export const SetMinAC = (min: number): SetMinActionType => {
     return { type: 'SET-MIN', min} as const
+}
+
+export const SetErrorAC = (error: string): SetErrorActionType => {
+    return { type: 'SET-ERROR', error} as const
 }
